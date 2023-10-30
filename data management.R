@@ -105,7 +105,7 @@ quinn_sub$tobacco_use[quinn_sub$sub_use_na=="Checked"]<-NA
 freq(quinn_sub$tobacco_use)
 
 #employment
-quinn_sub$employment_status[quinn_sub$employ %in% c("Full-time (30 or more hours per week)", "Part-time (fewer than 30 hours per week)")]<-"In labor force"
+quinn_sub$employment_status[quinn_sub$employ %in% c("Full-time (30 or more hours per week)", "Part-time (fewer than 30 hours per week)", "Unemployed")]<-"In labor force"
 quinn_sub$employment_status[quinn_sub$employ=="Student"]<-"Not in labor force"
 quinn_sub$employment_status[quinn_sub$employ=="Retired"]<-"Not in labor force"
 quinn_sub$employment_status[quinn_sub$employ=="Disabled, not able to work"]<-"Not in labor force"
@@ -135,7 +135,7 @@ jw <- merge(joyce_sub2, will_sub, by="id")
 jwl <- merge(jw, latonya_sub2, by = "id")
 jwlq <- merge(jwl, quinn_sub2, by = "id")
 all_managed_needs_assessment <- merge(jwlq, hl_sub, by = "id")
-#write_xlsx(all_managed_needs_assessment, "all managed data.xlsx")
+write_xlsx(all_managed_needs_assessment, "all managed data.xlsx")
 
 yelena7 <- all_managed_needs_assessment[, c("id", "race", "gend_id", "employment_status", "educ", 
                                            "tobacco_use", "age", "poverty", "need_help_reading_med_materials", 

@@ -6,6 +6,12 @@ needs <- read_excel("all managed data.xlsx")
 needs_final <- needs[, c("id", "race", "gend_id", "employment_status", "educ", 
                                             "tobacco_use", "poverty", "need_help_reading_med_materials", 
                                             "written_trouble_understand", "hearing_trouble_understand", "conf_fill_forms")]
+
+needs_final$need_help_reading_med_materials[needs_final$need_help_reading_med_materials=="Decline to answer"]<-NA
+needs_final$written_trouble_understand[needs_final$written_trouble_understand=="Decline to answer"]<-NA
+needs_final$hearing_trouble_understand[needs_final$hearing_trouble_understand=="Decline to answer"]<-NA
+needs_final$conf_fill_forms[needs_final$conf_fill_forms=="Decline to answer"]<-NA
+
 needs_final <- na.omit(needs_final)
 
 #######################################
