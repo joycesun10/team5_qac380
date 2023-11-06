@@ -1,18 +1,7 @@
 require(readxl)
 require(ggplot2)
 
-needs <- read_excel("all managed data.xlsx")
-
-needs_final <- needs[, c("id", "race", "gend_id", "employment_status", "educ", 
-                                            "tobacco_use", "poverty", "need_help_reading_med_materials", 
-                                            "written_trouble_understand", "hearing_trouble_understand", "conf_fill_forms")]
-
-needs_final$need_help_reading_med_materials[needs_final$need_help_reading_med_materials=="Decline to answer"]<-NA
-needs_final$written_trouble_understand[needs_final$written_trouble_understand=="Decline to answer"]<-NA
-needs_final$hearing_trouble_understand[needs_final$hearing_trouble_understand=="Decline to answer"]<-NA
-needs_final$conf_fill_forms[needs_final$conf_fill_forms=="Decline to answer"]<-NA
-
-needs_final <- na.omit(needs_final)
+needs_final <- read_excel("demographics and health literacy score data final.xlsx")
 
 #######################################
 # DESCRIPTIVE STATS AND VISUALIZATIONS
@@ -91,6 +80,14 @@ ggplot(needs_final) +
   xlab ("How Often Patients Have Trouble Understanding What They Are Told About Medical Conditions") + theme(text = element_text(size=20))
 
 # confidence filling out medical forms alone
+ggplot(needs_final) +
+  geom_bar(aes(x = conf_fill_forms), fill = "#f0c000") +
+  geom_text(aes(x = conf_fill_forms, label = after_stat(count)), stat = "count", vjust = -0.5, color = "black", size = 8) +
+  ggtitle("Distribution of How Confident Patients Are Filling Out Medical Forms By Themselves") +
+  ylab ("Number of Patients") +
+  xlab ("Patient Confidence") + theme(text = element_text(size=20))
+
+# health literacy score
 ggplot(needs_final) +
   geom_bar(aes(x = conf_fill_forms), fill = "#f0c000") +
   geom_text(aes(x = conf_fill_forms, label = after_stat(count)), stat = "count", vjust = -0.5, color = "black", size = 8) +

@@ -105,7 +105,8 @@ quinn_sub$tobacco_use[quinn_sub$sub_use_na=="Checked"]<-NA
 freq(quinn_sub$tobacco_use)
 
 #employment
-quinn_sub$employment_status[quinn_sub$employ %in% c("Full-time (30 or more hours per week)", "Part-time (fewer than 30 hours per week)", "Unemployed")]<-"In labor force"
+quinn_sub$employment_status[quinn_sub$employ %in% c("Full-time (30 or more hours per week)", "Part-time (fewer than 30 hours per week)")]<-"Employed"
+quinn_sub$employment_status[quinn_sub$employ=="Unemployed"]<-"Unemployed"
 quinn_sub$employment_status[quinn_sub$employ=="Student"]<-"Not in labor force"
 quinn_sub$employment_status[quinn_sub$employ=="Retired"]<-"Not in labor force"
 quinn_sub$employment_status[quinn_sub$employ=="Disabled, not able to work"]<-"Not in labor force"
@@ -126,10 +127,45 @@ quinn_sub2 <- quinn_sub[, c("id", "tobacco_use", "employment_status")]
 # health literacy
 vars <- c("id", "need_help_reading_med_materials", "written_trouble_understand", "hearing_trouble_understand", "conf_fill_forms")
 hl_sub <- needs_subset[ ,vars]
-hl_sub$need_help_reading_med_materials <- as.factor(hl_sub$need_help_reading_med_materials)
-hl_sub$written_trouble_understand <- as.factor(hl_sub$written_trouble_understand)
-hl_sub$hearing_trouble_understand <- as.factor(hl_sub$hearing_trouble_understand)
-hl_sub$conf_fill_forms <- as.factor(hl_sub$conf_fill_forms)
+
+hl_sub$need_help_reading_med_materials[hl_sub$need_help_reading_med_materials=="Decline to answer"]<-NA
+hl_sub$written_trouble_understand[hl_sub$written_trouble_understand=="Decline to answer"]<-NA
+hl_sub$hearing_trouble_understand[hl_sub$hearing_trouble_understand=="Decline to answer"]<-NA
+hl_sub$conf_fill_forms[hl_sub$conf_fill_forms=="Decline to answer"]<-NA
+
+hl_sub$need_help_reading_med_materials[hl_sub$need_help_reading_med_materials == "Always"] <- 5
+hl_sub$need_help_reading_med_materials[hl_sub$need_help_reading_med_materials == "Often"] <- 4
+hl_sub$need_help_reading_med_materials[hl_sub$need_help_reading_med_materials == "Sometimes"] <- 3
+hl_sub$need_help_reading_med_materials[hl_sub$need_help_reading_med_materials == "Occasionally"] <- 2
+hl_sub$need_help_reading_med_materials[hl_sub$need_help_reading_med_materials == "Never"] <- 1
+
+hl_sub$written_trouble_understand[hl_sub$written_trouble_understand == "Always"] <- 5
+hl_sub$written_trouble_understand[hl_sub$written_trouble_understand == "Often"] <- 4
+hl_sub$written_trouble_understand[hl_sub$written_trouble_understand == "Sometimes"] <- 3
+hl_sub$written_trouble_understand[hl_sub$written_trouble_understand == "Occasionally"] <- 2
+hl_sub$written_trouble_understand[hl_sub$written_trouble_understand == "Never"] <- 1
+
+hl_sub$hearing_trouble_understand[hl_sub$hearing_trouble_understand == "Always"] <- 5
+hl_sub$hearing_trouble_understand[hl_sub$hearing_trouble_understand == "Often"] <- 4
+hl_sub$hearing_trouble_understand[hl_sub$hearing_trouble_understand == "Sometimes"] <- 3
+hl_sub$hearing_trouble_understand[hl_sub$hearing_trouble_understand == "Occasionally"] <- 2
+hl_sub$hearing_trouble_understand[hl_sub$hearing_trouble_understand == "Never"] <- 1
+
+hl_sub$conf_fill_forms[hl_sub$conf_fill_forms == "Not confident at all"] <- 5
+hl_sub$conf_fill_forms[hl_sub$conf_fill_forms == "A little bit confident"] <- 4
+hl_sub$conf_fill_forms[hl_sub$conf_fill_forms == "Somewhat confident"] <- 3
+hl_sub$conf_fill_forms[hl_sub$conf_fill_forms == "Quite a bit confident"] <- 2
+hl_sub$conf_fill_forms[hl_sub$conf_fill_forms == "Extremely confident"] <- 1
+
+hl_sub$need_help_reading_med_materials <- as.numeric(hl_sub$need_help_reading_med_materials)
+hl_sub$written_trouble_understand <- as.numeric(hl_sub$written_trouble_understand)
+hl_sub$hearing_trouble_understand <- as.numeric(hl_sub$hearing_trouble_understand)
+hl_sub$conf_fill_forms <- as.numeric(hl_sub$conf_fill_forms)
+
+hl_sub <- na.omit(hl_sub)
+
+hl_sub$health_literacy_score <- rowMeans(hl_sub[, c("need_help_reading_med_materials", "written_trouble_understand", "hearing_trouble_understand", "conf_fill_forms")])
+
 
 jw <- merge(joyce_sub2, will_sub, by="id")
 jwl <- merge(jw, latonya_sub2, by = "id")
@@ -152,6 +188,10 @@ yelena6_omit <- na.omit(yelena6)
 # after omitting all NAs for all minus the age variable, 701 obvs
 
 
+edited6 <- all_managed_needs_assessment[, c("id", "race", "gend_id", "employment_status", "educ", 
+                                            "tobacco_use", "poverty", "health_literacy_score")]
+edited6_omit <- na.omit(edited6)
+write_xlsx(edited6_omit, "demographics and health literacy score data final.xlsx")
 
 
 
