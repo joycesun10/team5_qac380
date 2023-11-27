@@ -1,4 +1,3 @@
-
 require(readxl)
 library(dplyr)
 require(writexl)
@@ -312,7 +311,7 @@ library(plyr)
 require(poLCA)
 library(poLCA)
 
-demographics_and_health_literacy_score_data_final <- read_excel("Desktop/Fall 2023/Statistical Consulting /demographics and health literacy score data final.xlsx")
+demographics_and_health_literacy_score_data_final <- read_excel("demographics and health literacy score data final.xlsx")
 
 # recode response values to numbers starting at "1" (It's a poLCA thing)
 demographics_and_health_literacy_score_data_final$race<-revalue(demographics_and_health_literacy_score_data_final$race, c("American Indian or Alaska Native"="1", "Asian"="2", "Black or African American"="3",
@@ -364,3 +363,19 @@ summary(myAnovaResults)
 myAnovaResults <- aov(health_literacy_score ~ class, data = demographics_and_health_literacy_score_data_final) 
 TukeyHSD(myAnovaResults)
 
+#Calculate average health literacy scores across classes 
+
+class_probabilities <- lCA3$posterior
+
+# Assign each individual to the class with the highest probability
+class_assignments <- apply(class_probabilities, 1, which.max)
+
+# Create indicator variables for each class
+class_indicators <- model.matrix(~ class_assignments - 1)
+
+# Combine the indicator variables with your original dataset
+data_with_indicators <- cbind(demographics_and_health_literacy_score_data_final, class_indicators)
+
+# Calculate averages for each variable within each class
+class_averages <- aggregate(. ~ class_assignments, data = data_with_indicators, mean)
+class_averages
