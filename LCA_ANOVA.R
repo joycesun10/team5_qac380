@@ -379,3 +379,12 @@ data_with_indicators <- cbind(demographics_and_health_literacy_score_data_final,
 # Calculate averages for each variable within each class
 class_averages <- aggregate(. ~ class_assignments, data = data_with_indicators, mean)
 class_averages
+
+
+ggplot(data=demographics_and_health_literacy_score_data_final)+
+  geom_boxplot(aes(x=class, y=health_literacy_score, fill=class))+
+  ggtitle('Association Between Class & Health Literacy Score')+
+  theme(axis.text.x=element_text(hjust=1))+
+  ylab("Health Literacy Score")+
+  xlab("Class")+
+  scale_fill_manual(values=c("cornflowerblue","brown2","darkgoldenrod1"))
